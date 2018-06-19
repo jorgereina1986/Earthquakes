@@ -4,16 +4,15 @@ import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.jorgereina.codingexercise.earthquakefragment.EarthquakeDetailsFragment;
 import com.jorgereina.codingexercise.earthquakefragment.EarthquakeFragment;
 
 public class EarthquakeActivity extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         if (savedInstanceState != null) {
             return;
@@ -26,6 +25,15 @@ public class EarthquakeActivity extends AppCompatActivity {
                     .add(R.id.fragment_container, earthquakeFragment, "EarthquakeFragment")
                     .commit();
 
+        }
+
+        if (findViewById(R.id.fragment_container_2) != null) {
+
+            FragmentManager fragmentManager = getFragmentManager();
+            EarthquakeDetailsFragment detailsFragment = EarthquakeDetailsFragment.newInstance(null);
+            fragmentManager.beginTransaction()
+                    .add(R.id.fragment_container_2, detailsFragment, "earthquakedetails")
+                    .commit();
         }
 
     }

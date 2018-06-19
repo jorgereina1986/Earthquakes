@@ -34,12 +34,6 @@ public class EarthquakeFragment extends Fragment
 
     private Presenter presenter;
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setRetainInstance(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -47,20 +41,21 @@ public class EarthquakeFragment extends Fragment
         presenter = new EarthquakeFragmentPresenterImpl(this);
         recyclerView = view.findViewById(R.id.earthquake_rv);
         progressBar = view.findViewById(R.id.progress_bar);
-
+        adapter = new EarthquakeAdapter(earthquakes, presenter, this);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
         presenter.fetchEarthquakesTask();
         return view;
     }
+
 
     @Override
     public void setRecyclerViewData(List<Earthquake> earthquakes) {
 
         if (earthquakes != null && earthquakes.size() > 0) {
             this.earthquakes = earthquakes;
-            adapter = new EarthquakeAdapter(earthquakes, presenter, this);
-            layoutManager = new LinearLayoutManager(getActivity());
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(adapter);
+            adapter.setEarthquakes(earthquakes);
         }
     }
 
@@ -71,6 +66,7 @@ public class EarthquakeFragment extends Fragment
 
     @Override
     public void goToDetailsFragment(Earthquake earthquake) {
+
 
         EarthquakeDetailsFragment detailsFragment = EarthquakeDetailsFragment.newInstance(earthquake);
         FragmentManager fragmentManager = getFragmentManager();
@@ -93,10 +89,5 @@ public class EarthquakeFragment extends Fragment
 
         goToDetailsFragment(earthquakes.get(index));
 
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
     }
 }

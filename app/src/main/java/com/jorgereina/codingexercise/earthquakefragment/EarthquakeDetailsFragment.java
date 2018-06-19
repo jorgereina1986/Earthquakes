@@ -31,7 +31,11 @@ public class EarthquakeDetailsFragment extends Fragment {
         Bundle bundle = this.getArguments();
         Earthquake earthquake = bundle.getParcelable(EARTHQUAKE_PARCEL);
 
+        if (earthquake == null) {
+            return;
+        }
         locationTv.setText(earthquake.getPlace());
+
     }
 
     public static EarthquakeDetailsFragment newInstance(Earthquake earthquake) {

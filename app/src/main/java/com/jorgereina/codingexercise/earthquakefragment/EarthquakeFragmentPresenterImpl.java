@@ -43,6 +43,8 @@ public class EarthquakeFragmentPresenterImpl implements Presenter {
 
         private List<Earthquake> earthquakes = new ArrayList<>();
 
+        //TODO: GET DATE!
+
         @Override
         protected JSONObject doInBackground(Void... voids) {
 
@@ -85,7 +87,6 @@ public class EarthquakeFragmentPresenterImpl implements Presenter {
                     e.printStackTrace();
                 }
                 view.setRecyclerViewData(earthquakes);
-
             }
         }
 

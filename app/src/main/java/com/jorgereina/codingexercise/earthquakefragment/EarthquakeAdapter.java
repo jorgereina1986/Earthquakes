@@ -2,6 +2,7 @@ package com.jorgereina.codingexercise.earthquakefragment;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,8 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
     @Override
     public void onBindViewHolder(@NonNull EarthquakeViewHolder holder, int position) {
 
+        Log.d("lagartobind", "onBindViewHolder: " + position);
+
         Earthquake earthquake = earthquakes.get(position);
 
         holder.place.setText(earthquake.getPlace());
@@ -43,6 +46,7 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
 
     @Override
     public int getItemCount() {
+        if (earthquakes == null) return 0;
         return earthquakes.size();
     }
 
@@ -68,4 +72,8 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
         void onItemSelected(int index);
     }
 
+    public void setEarthquakes(List<Earthquake> earthquakes) {
+        this.earthquakes = earthquakes;
+        notifyDataSetChanged();
+    }
 }
