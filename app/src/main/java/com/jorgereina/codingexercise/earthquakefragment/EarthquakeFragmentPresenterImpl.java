@@ -37,14 +37,6 @@ public class EarthquakeFragmentPresenterImpl implements Presenter {
         fetchEarthquakesTask.execute();
     }
 
-    @Override
-    public void onEarthquakeSelected(int index) {
-        //call view and setup fragments
-        Toast.makeText(view.mGetContext(), "Toast", Toast.LENGTH_LONG).show();
-
-
-    }
-
     public class FetchEarthquakesTask extends AsyncTask<Void, Integer, JSONObject> {
         private static final String EARTHQUAKE_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2018-05-14&endtime=2018-06-14";
         private static final String TAG = "lagarto";
@@ -88,12 +80,12 @@ public class EarthquakeFragmentPresenterImpl implements Presenter {
                         earthquakes.add(earthquake);
                         view.hideProgress();
                         Log.d(TAG, "onPostExecute: " + earthquake.getPlace());
-
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                view.setRecyclerView(earthquakes);
+                view.setRecyclerViewData(earthquakes);
+
             }
         }
 
@@ -112,5 +104,8 @@ public class EarthquakeFragmentPresenterImpl implements Presenter {
             }
             return null;
         }
+
     }
+
+
 }

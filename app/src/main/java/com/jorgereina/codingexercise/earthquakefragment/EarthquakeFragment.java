@@ -30,8 +30,15 @@ public class EarthquakeFragment extends Fragment
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private List<Earthquake> earthquakes;
 
     private Presenter presenter;
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     @Nullable
     @Override
@@ -40,16 +47,21 @@ public class EarthquakeFragment extends Fragment
         presenter = new EarthquakeFragmentPresenterImpl(this);
         recyclerView = view.findViewById(R.id.earthquake_rv);
         progressBar = view.findViewById(R.id.progress_bar);
+
         presenter.fetchEarthquakesTask();
         return view;
     }
 
     @Override
-    public void setRecyclerView(List<Earthquake> earthquakes) {
-        adapter = new EarthquakeAdapter(earthquakes, presenter, this);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+    public void setRecyclerViewData(List<Earthquake> earthquakes) {
+
+        if (earthquakes != null && earthquakes.size() > 0) {
+            this.earthquakes = earthquakes;
+            adapter = new EarthquakeAdapter(earthquakes, presenter, this);
+            layoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(adapter);
+        }
     }
 
     @Override
@@ -59,20 +71,32 @@ public class EarthquakeFragment extends Fragment
 
     @Override
     public void goToDetailsFragment(Earthquake earthquake) {
+
         EarthquakeDetailsFragment detailsFragment = EarthquakeDetailsFragment.newInstance(earthquake);
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.fragment_container_2, detailsFragment, "earthquakedetails").addToBackStack(null).commit();
+        if (getActivity().findViewById(R.id.fragment_container_2) == null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, detailsFragment, "earthquakedetails")
+                    .addToBackStack(null)
+                    .commit();
+        }
+        else {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container_2, detailsFragment, "earthquakedetails")
+                    .commit();
+        }
     }
-
-    @Override
-    public Context mGetContext() {
-        return getActivity();
-    }
-
 
     @Override
     public void onItemSelected(int index) {
         Log.d(TAG, "onItemSelected: " + index);
 
+        goToDetailsFragment(earthquakes.get(index));
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

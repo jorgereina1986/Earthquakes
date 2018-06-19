@@ -60,11 +60,12 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
         public void onClick(View view) {
             int clickedPosition = getAdapterPosition();
             selectedItemListener.onItemSelected(clickedPosition);
-//            presenter.onEarthquakeSelected(clickedPosition);
+
         }
     }
 
     public interface SelectedItemListener {
         void onItemSelected(int index);
     }
+
 }
