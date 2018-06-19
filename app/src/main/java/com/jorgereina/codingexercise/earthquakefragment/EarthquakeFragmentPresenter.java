@@ -2,7 +2,6 @@ package com.jorgereina.codingexercise.earthquakefragment;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.jorgereina.codingexercise.earthquakefragment.EarthquakeFragmentContract.Presenter;
 import com.jorgereina.codingexercise.earthquakefragment.EarthquakeFragmentContract.View;
@@ -23,25 +22,41 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class EarthquakeFragmentPresenterImpl implements Presenter {
+public class EarthquakeFragmentPresenter implements Presenter {
+
+    private List<Earthquake> earthquakes = new ArrayList<>();
 
     private View view;
 
-    public EarthquakeFragmentPresenterImpl(View view) {
+    public EarthquakeFragmentPresenter(View view) {
         this.view = view;
     }
 
     @Override
-    public void fetchEarthquakesTask() {
+    public void loadEarthquakesData() {
         FetchEarthquakesTask fetchEarthquakesTask = new FetchEarthquakesTask();
         fetchEarthquakesTask.execute();
+    }
+
+    @Override
+    public int getEarthquakesCount() {
+        return earthquakes.size();
+    }
+
+    @Override
+    public Earthquake getEarthquakeData(int position) {
+        return earthquakes.get(position);
+    }
+
+    @Override
+    public void earthquakeSelected(int position) {
+        view.showEarthquakeDetails(earthquakes.get(position));
     }
 
     public class FetchEarthquakesTask extends AsyncTask<Void, Integer, JSONObject> {
         private static final String EARTHQUAKE_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2018-05-14&endtime=2018-06-14";
         private static final String TAG = "lagarto";
 
-        private List<Earthquake> earthquakes = new ArrayList<>();
 
         //TODO: GET DATE!
 
@@ -86,7 +101,7 @@ public class EarthquakeFragmentPresenterImpl implements Presenter {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                view.setRecyclerViewData(earthquakes);
+                view.onEarthquakeDataLoaded();
             }
         }
 

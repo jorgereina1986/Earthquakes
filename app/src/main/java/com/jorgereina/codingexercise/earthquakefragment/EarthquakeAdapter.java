@@ -17,14 +17,11 @@ import static com.jorgereina.codingexercise.earthquakefragment.EarthquakeFragmen
 
 public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.EarthquakeViewHolder> {
 
-    private List<Earthquake> earthquakes;
-    private SelectedItemListener selectedItemListener;
     Presenter presenter;
 
-    public EarthquakeAdapter(List<Earthquake> earthquakes, Presenter presenter, SelectedItemListener selectedItemListener) {
-        this.earthquakes = earthquakes;
+    public EarthquakeAdapter(Presenter presenter) {
         this.presenter = presenter;
-        this.selectedItemListener = selectedItemListener;
+
     }
 
     @NonNull
@@ -39,15 +36,14 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
 
         Log.d("lagartobind", "onBindViewHolder: " + position);
 
-        Earthquake earthquake = earthquakes.get(position);
+        Earthquake earthquake = presenter.getEarthquakeData(position);
 
         holder.place.setText(earthquake.getPlace());
     }
 
     @Override
     public int getItemCount() {
-        if (earthquakes == null) return 0;
-        return earthquakes.size();
+        return presenter.getEarthquakesCount();
     }
 
     public class EarthquakeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -63,17 +59,9 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
         @Override
         public void onClick(View view) {
             int clickedPosition = getAdapterPosition();
-            selectedItemListener.onItemSelected(clickedPosition);
+            presenter.earthquakeSelected(clickedPosition);
 
         }
     }
 
-    public interface SelectedItemListener {
-        void onItemSelected(int index);
-    }
-
-    public void setEarthquakes(List<Earthquake> earthquakes) {
-        this.earthquakes = earthquakes;
-        notifyDataSetChanged();
-    }
 }

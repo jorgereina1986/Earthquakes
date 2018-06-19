@@ -7,13 +7,20 @@ import java.util.List;
 public interface EarthquakeFragmentContract {
 
     interface View {
-        void setRecyclerViewData(List<Earthquake> earthquakes);
-        void hideProgress();
-        void goToDetailsFragment(Earthquake earthquake);
+        void onEarthquakeDataLoaded();
 
+        void hideProgress();
+
+        void showEarthquakeDetails(Earthquake earthquake);
     }
 
     interface Presenter {
-        void fetchEarthquakesTask();
+        void loadEarthquakesData();
+
+        int getEarthquakesCount();
+
+        Earthquake getEarthquakeData(int position);
+
+        void earthquakeSelected(int position);
     }
 }
