@@ -34,6 +34,11 @@ public class EarthquakeFragmentPresenter implements Presenter {
 
     @Override
     public void loadEarthquakesData() {
+        if (earthquakes!= null && earthquakes.size() > 0) {
+            view.onEarthquakeDataLoaded();
+            return;
+        }
+
         FetchEarthquakesTask fetchEarthquakesTask = new FetchEarthquakesTask();
         fetchEarthquakesTask.execute();
     }
