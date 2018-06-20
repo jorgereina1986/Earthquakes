@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.jorgereina.codingexercise.R;
+import com.jorgereina.codingexercise.application.EarthquakesApp;
 import com.jorgereina.codingexercise.model.Earthquake;
 
 import static com.jorgereina.codingexercise.earthquakefragment.EarthquakeFragmentContract.*;
@@ -27,13 +28,15 @@ public class EarthquakeFragment extends Fragment
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
 
+
     private Presenter presenter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_earthquake, container, false);
-        presenter = new EarthquakeFragmentPresenter(this);
+        EarthquakesApp earthquakesApp = (EarthquakesApp) getActivity().getApplication();
+        presenter = new EarthquakeFragmentPresenter(this, earthquakesApp.getDataRepository());
         recyclerView = view.findViewById(R.id.earthquake_rv);
         progressBar = view.findViewById(R.id.progress_bar);
         adapter = new EarthquakeAdapter(presenter);
@@ -47,6 +50,11 @@ public class EarthquakeFragment extends Fragment
     @Override
     public void onEarthquakeDataLoaded() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.jorgereina.codingexercise.earthquakefragment.EarthquakeFragmentContract.Presenter;
 import com.jorgereina.codingexercise.earthquakefragment.EarthquakeFragmentContract.View;
+import com.jorgereina.codingexercise.model.DataRepository;
 import com.jorgereina.codingexercise.model.Earthquake;
 
 import org.json.JSONArray;
@@ -24,38 +25,41 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class EarthquakeFragmentPresenter implements Presenter {
 
-    private List<Earthquake> earthquakes = new ArrayList<>();
+//    private List<Earthquake> earthquakes = new ArrayList<>();
+    private DataRepository dataRepository;
 
     private View view;
 
-    public EarthquakeFragmentPresenter(View view) {
+    public EarthquakeFragmentPresenter(View view, DataRepository dataRepository) {
         this.view = view;
+        this.dataRepository = dataRepository;
     }
 
     @Override
     public void loadEarthquakesData() {
-        if (earthquakes!= null && earthquakes.size() > 0) {
+        if (dataRepository.getEarthquakeCount() > 0) {
             view.onEarthquakeDataLoaded();
             return;
         }
 
+        view.showProgress();
         FetchEarthquakesTask fetchEarthquakesTask = new FetchEarthquakesTask();
         fetchEarthquakesTask.execute();
     }
 
     @Override
     public int getEarthquakesCount() {
-        return earthquakes.size();
+        return dataRepository.getEarthquakeCount();
     }
 
     @Override
     public Earthquake getEarthquakeData(int position) {
-        return earthquakes.get(position);
+        return dataRepository.getData(position);
     }
 
     @Override
     public void earthquakeSelected(int position) {
-        view.showEarthquakeDetails(earthquakes.get(position));
+        view.showEarthquakeDetails(dataRepository.getData(position));
     }
 
     public class FetchEarthquakesTask extends AsyncTask<Void, Integer, JSONObject> {
@@ -91,6 +95,7 @@ public class EarthquakeFragmentPresenter implements Presenter {
         @Override
         protected void onPostExecute(JSONObject jsonObject) {
 
+            List<Earthquake> earthquakes = new ArrayList<>();
             if (jsonObject != null) {
                 try {
                     JSONArray features = jsonObject.getJSONArray("features");
@@ -100,12 +105,13 @@ public class EarthquakeFragmentPresenter implements Presenter {
                         String place = properties.getString("place");
                         Earthquake earthquake = new Earthquake(place);
                         earthquakes.add(earthquake);
-                        view.hideProgress();
                         Log.d(TAG, "onPostExecute: " + earthquake.getPlace());
                     }
+                    dataRepository.setEarthquakes(earthquakes);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                view.hideProgress();
                 view.onEarthquakeDataLoaded();
             }
         }

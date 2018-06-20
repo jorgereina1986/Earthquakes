@@ -9,6 +9,8 @@ public interface EarthquakeFragmentContract {
     interface View {
         void onEarthquakeDataLoaded();
 
+        void showProgress();
+
         void hideProgress();
 
         void showEarthquakeDetails(Earthquake earthquake);
